@@ -1,0 +1,55 @@
+<div class="w-60 relative flex gap-3 cursor-pointer hover:opacity-70">
+  <div
+    class="flex gap-1"
+    *ngIf="file.dir"
+    [routerLink]="file.path.slice(file.path.lastIndexOf('\\') + 1)"
+  >
+    <p>{{ file.path.slice(file.path.lastIndexOf("\\") + 1) }}</p>
+    <button *ngIf="file.dir">
+      <fa-icon [icon]="faFolder"></fa-icon>
+    </button>
+  </div>
+
+  <div class="flex gap-1" *ngIf="file.file">
+    <p>{{ file.path.slice(file.path.lastIndexOf("\\") + 1) }}</p>
+    <button *ngIf="file.file">
+      <fa-icon [icon]="faFile"></fa-icon>
+    </button>
+  </div>
+  <button (click)="onSettingToggle()">
+    <fa-icon [icon]="faGear"></fa-icon>
+  </button>
+
+  <div
+    class="absolute top-10 w-32 bg-white shadow-md rounded-md p-2 z-10"
+    *ngIf="isSettingOpen"
+  >
+    <div class="flex flex-col gap-2 items-start">
+      <button
+        (click)="onDownloadHandler()"
+        class="hover:border-b-2 border-b-black"
+        *ngIf="file.file"
+      >
+        Download file
+      </button>
+      <button
+        (click)="onDeleteHandler()"
+        class="hover:border-b-2 border-b-black"
+      >
+        Delete {{ file.dir ? "folder" : "file" }}
+      </button>
+      <button
+        (click)="onMoveFolder('move')"
+        class="hover:border-b-2 border-b-black"
+      >
+        Move {{ file.dir ? "folder" : "file" }}
+      </button>
+      <button
+        (click)="onMoveFolder('copy')"
+        class="hover:border-b-2 border-b-black"
+      >
+        Copy {{ file.dir ? "folder" : "file" }}
+      </button>
+    </div>
+  </div>
+</div>
