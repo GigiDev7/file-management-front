@@ -82,6 +82,7 @@ export class UserPageComponent implements OnInit {
         .subscribe({
           next: () => {
             this.newFileInputShown = false;
+            this.imageUrl = '';
             this.fileService
               .getDirectories(this.router.url)
               .pipe(untilDestroyed(this))
