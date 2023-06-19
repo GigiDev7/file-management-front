@@ -66,6 +66,7 @@
     >
       Cancel
     </button>
+    <img class="w-40 h-40" *ngIf="imageUrl" [src]="imageUrl" />
   </div>
 
   <div class="mt-12 flex gap-24 flex-wrap" *ngIf="dirs.length > 0">

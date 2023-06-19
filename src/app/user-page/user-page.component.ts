@@ -28,7 +28,7 @@ export class UserPageComponent implements OnInit {
   public dirs: File[] = [];
   public newFolderInputShown = false;
   public newFileInputShown = false;
-  public fileUrl: string | null | ArrayBuffer = '';
+  public imageUrl: string | null | ArrayBuffer = '';
   public folderName = '';
   public folderMoveOptions: {
     type: 'move' | 'copy';
@@ -53,21 +53,23 @@ export class UserPageComponent implements OnInit {
 
   onCloseAddFileClick() {
     this.newFileInputShown = false;
+    this.imageUrl = '';
   }
 
   onSelectFile(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target.files) {
       this.file = target.files[0];
-      /*  const reader = new FileReader();
+      if (this.file.type.startsWith('image')) {
+        const reader = new FileReader();
 
-      reader.readAsDataURL(file);
-      reader.onload = (event) => {
-        if (event.target) {
-          this.fileUrl = event.target.result;
-          console.log(event.target.result);
-        }
-      }; */
+        reader.readAsDataURL(this.file);
+        reader.onload = (event) => {
+          if (event.target) {
+            this.imageUrl = event.target.result;
+          }
+        };
+      }
     }
   }
 
