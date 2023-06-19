@@ -23,7 +23,6 @@ export class UserPageComponent implements OnInit {
   faX = faX;
 
   userEmail = localStorage.getItem('email');
-  userToken = localStorage.getItem('token');
 
   public dirs: File[] = [];
   public newFolderInputShown = false;

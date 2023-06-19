@@ -29,8 +29,6 @@ export class UserFileComponent {
   faFile = faFile;
   faGear = faGear;
 
-  userToken = localStorage.getItem('token');
-
   public isSettingOpen = false;
 
   onMoveFolder(type: 'move' | 'copy') {

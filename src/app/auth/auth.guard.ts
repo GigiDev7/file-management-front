@@ -21,8 +21,8 @@ export class AuthGuard {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    const userEmail = localStorage.getItem('email');
-    if (!userEmail) {
+    const token = localStorage.getItem('token');
+    if (!token) {
       return this.router.navigate(['auth/login']);
     }
 
