@@ -1,5 +1,10 @@
 export interface File {
-  dir: boolean;
-  file: boolean;
+  _id: string;
+  name: string;
   path: string;
+  size?: number;
+  fsPath?: string;
+  mimeType?: string;
+  createdBy: string;
+  hash?: string;
 }

@@ -24,17 +24,15 @@ export class UserPageComponent implements OnInit {
 
   userEmail = localStorage.getItem('email');
 
-  public dirs: File[] = [];
+  public files: File[] = [];
   public newFolderInputShown = false;
   public newFileInputShown = false;
   public imageUrl: string | null | ArrayBuffer = '';
   public folderName = '';
   public folderMoveOptions: {
     type: 'move' | 'copy';
-    currentUrl: string;
-    folderName: string;
-    isFile: boolean;
-    isFolder: boolean;
+    url: string;
+    file: File;
   } | null = null;
   public file: null | globalThis.File = null;
 
@@ -76,15 +74,16 @@ export class UserPageComponent implements OnInit {
     if (this.file) {
       const formData = new FormData();
       formData.append('file', this.file);
+      formData.append('filePath', this.router.url);
       this.fileService
-        .uploadFile(formData, this.router.url)
+        .uploadFile(formData)
         .pipe(untilDestroyed(this))
         .subscribe({
           next: () => {
             this.newFileInputShown = false;
             this.imageUrl = '';
             this.fileService
-              .getDirectories(this.router.url)
+              .getFiles(this.router.url)
               .pipe(untilDestroyed(this))
               .subscribe();
           },
@@ -92,35 +91,28 @@ export class UserPageComponent implements OnInit {
     }
   }
 
-  onFolderMove(event: {
-    type: 'move' | 'copy';
-    currentUrl: string;
-    folderName: string;
-    isFile: boolean;
-    isFolder: boolean;
-  }) {
+  onFolderMove(event: { type: 'move' | 'copy'; url: string; file: File }) {
     this.folderMoveOptions = event;
   }
 
   onMoveClick() {
-    if (this.router.url === this.folderMoveOptions?.currentUrl) {
+    if (this.router.url === this.folderMoveOptions?.url) {
       return;
     }
     if (this.folderMoveOptions) {
       this.fileService
         .moveFolder(
           this.folderMoveOptions.type,
-          this.folderMoveOptions.currentUrl,
           this.router.url,
-          this.folderMoveOptions.folderName,
-          this.folderMoveOptions.isFolder
+          this.folderMoveOptions.file._id,
+          !!this.folderMoveOptions.file.mimeType
         )
         .pipe(untilDestroyed(this))
         .subscribe({
           next: () => {
             this.folderMoveOptions = null;
             this.fileService
-              .getDirectories(this.router.url)
+              .getFiles(this.router.url)
               .pipe(untilDestroyed(this))
               .subscribe();
           },
@@ -140,11 +132,11 @@ export class UserPageComponent implements OnInit {
           this.newFolderInputShown = false;
           this.folderName = '';
           this.fileService
-            .getDirectories(this.router.url)
+            .getFiles(this.router.url)
             .pipe(untilDestroyed(this))
             .subscribe({
               next: (res) => {
-                this.dirs = res;
+                this.files = res;
               },
             });
         },
@@ -159,8 +151,8 @@ export class UserPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.fileService.files.pipe(untilDestroyed(this)).subscribe({
-      next: (f) => {
-        this.dirs = f;
+      next: (data) => {
+        this.files = data;
       },
     });
 
@@ -168,7 +160,7 @@ export class UserPageComponent implements OnInit {
       next: (url) => {
         let urlPath = url.reduce((acc, el) => (acc += `/${el.path}`), '');
         this.fileService
-          .getDirectories(urlPath)
+          .getFiles(urlPath)
           .pipe(untilDestroyed(this))
           .subscribe();
       },

@@ -69,10 +69,10 @@
     <img class="w-40 h-40" *ngIf="imageUrl" [src]="imageUrl" />
   </div>
 
-  <div class="mt-12 flex gap-24 flex-wrap" *ngIf="dirs.length > 0">
+  <div class="mt-12 flex gap-24 flex-wrap" *ngIf="files.length > 0">
     <app-user-file
       (moveFolder)="onFolderMove($event)"
-      *ngFor="let item of dirs"
+      *ngFor="let item of files"
       [file]="item"
     ></app-user-file>
   </div>

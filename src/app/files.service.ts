@@ -12,8 +12,8 @@ export class FileService {
 
   files = new BehaviorSubject<File[]>([]);
 
-  getDirectories(path: string = '') {
-    return this.http.get<File[]>(`${BASE_URL}/file/dirs?p=${path}`).pipe(
+  getFiles(path: string = '') {
+    return this.http.get<File[]>(`${BASE_URL}/file?p=${path}`).pipe(
       tap((res) => {
         this.files.next(res);
       })
@@ -21,51 +21,37 @@ export class FileService {
   }
 
   addFolder(path: string = '', folderName: string) {
-    return this.http.post(`${BASE_URL}/file/dirs?p=${path}`, { folderName });
+    return this.http.post(`${BASE_URL}/file/dir`, { folderName, path });
   }
 
-  deleteFolder(path: string = '', folderName: string) {
-    return this.http.post(`${BASE_URL}/file/dirs/remove?p=${path}`, {
-      folderName,
-    });
+  deleteFolder(folderId: string) {
+    return this.http.delete(`${BASE_URL}/file/dir/${folderId}`);
   }
 
   moveFolder(
     type: 'copy' | 'move',
-    sourcePath: string,
     destinationPath: string,
-    folderName: string,
-    isFolder: boolean
+    fileId: string,
+    isFile: boolean
   ) {
-    let url = `${BASE_URL}/file`;
-    if (isFolder) {
-      url += `/dirs/${type}`;
-    } else {
-      url += `/${type}`;
+    let url = `${BASE_URL}/file/${type}/${fileId}`;
+    if (!isFile) {
+      url = `${BASE_URL}/file/dir/${type}/${fileId}`;
     }
-    return this.http.post(url, {
-      sourcePath: `${sourcePath}${
-        sourcePath.length > 1 ? '/' : ''
-      }${folderName}`,
-      destinationPath: `${destinationPath}${
-        destinationPath.length > 1 ? '/' : ''
-      }${folderName}`,
-    });
+    return this.http.post(url, { path: destinationPath });
   }
 
-  downloadFile(path: string = '', fileName: string) {
-    return this.http.get(`${BASE_URL}/file/download?p=${path}/${fileName}`, {
+  downloadFile(fileId: string) {
+    return this.http.get(`${BASE_URL}/file/${fileId}`, {
       responseType: 'blob',
     });
   }
 
-  deleteFile(path: string) {
-    return this.http.post(`${BASE_URL}/file/delete`, {
-      filePath: path,
-    });
+  deleteFile(fileId: string) {
+    return this.http.delete(`${BASE_URL}/file/${fileId}`);
   }
 
-  uploadFile(formData: FormData, urlPath: string) {
-    return this.http.post(`${BASE_URL}/file/upload?p=${urlPath}`, formData);
+  uploadFile(formData: FormData) {
+    return this.http.post(`${BASE_URL}/file`, formData);
   }
 }

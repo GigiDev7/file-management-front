@@ -1,18 +1,14 @@
-<div class="w-60 relative flex gap-3 cursor-pointer hover:opacity-70">
-  <div
-    class="flex gap-1"
-    *ngIf="file.dir"
-    [routerLink]="file.path.slice(file.path.lastIndexOf('\\') + 1)"
-  >
-    <p>{{ file.path.slice(file.path.lastIndexOf("\\") + 1) }}</p>
-    <button *ngIf="file.dir">
+<div class="w-60 relative flex gap-3 cursor-pointer">
+  <div class="flex gap-1" *ngIf="!file.mimeType" [routerLink]="file.name">
+    <p>{{ file.name }}</p>
+    <button>
       <fa-icon [icon]="faFolder"></fa-icon>
     </button>
   </div>
 
-  <div class="flex gap-1" *ngIf="file.file">
-    <p>{{ file.path.slice(file.path.lastIndexOf("\\") + 1) }}</p>
-    <button *ngIf="file.file">
+  <div class="flex gap-1" *ngIf="file.mimeType">
+    <p>{{ file.name }}</p>
+    <button>
       <fa-icon [icon]="faFile"></fa-icon>
     </button>
   </div>
@@ -21,34 +17,34 @@
   </button>
 
   <div
-    class="absolute top-10 w-32 bg-white shadow-md rounded-md p-2 z-10"
+    class="absolute top-10 w-32 bg-white shadow-md rounded-md p-2 z-50"
     *ngIf="isSettingOpen"
   >
     <div class="flex flex-col gap-2 items-start">
       <button
         (click)="onDownloadHandler()"
         class="hover:border-b-2 border-b-black"
-        *ngIf="file.file"
+        *ngIf="file.mimeType"
       >
         Download file
       </button>
       <button
-        (click)="onDeleteHandler()"
+        (click)="onDeleteHandler(file._id)"
         class="hover:border-b-2 border-b-black"
       >
-        Delete {{ file.dir ? "folder" : "file" }}
+        Delete {{ !file.mimeType ? "folder" : "file" }}
       </button>
       <button
         (click)="onMoveFolder('move')"
         class="hover:border-b-2 border-b-black"
       >
-        Move {{ file.dir ? "folder" : "file" }}
+        Move {{ !file.mimeType ? "folder" : "file" }}
       </button>
       <button
         (click)="onMoveFolder('copy')"
         class="hover:border-b-2 border-b-black"
       >
-        Copy {{ file.dir ? "folder" : "file" }}
+        Copy {{ !file.mimeType ? "folder" : "file" }}
       </button>
     </div>
   </div>
